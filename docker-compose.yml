@@ -1,0 +1,19 @@
+version: '3'
+
+networks:
+  ompi-inet:
+
+
+services:
+  controller:
+    image: &APP_IMAGE ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+    command: /bin/bash
+
+  worker-node:
+    &WORKER_SETTINGS
+    image: *APP_IMAGE
+    networks:
+      ompi-inet: {}
+    cpus: 1
+    deploy:
+      replicas: 6
