@@ -1,18 +1,11 @@
-include .env
-
-FULL_IMAGE_NAME = $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)
-CONTAINER_TEST_NAME = openmpi-demo-test
-
 build-image:
-	docker build -t $(FULL_IMAGE_NAME) .
+	docker compose build
 
-demo: _start_workers _start_controller down
+start:
+	docker compose up -d
 
-_start_workers:
-	docker compose up -d worker-node
-
-_start_controller:
-	docker compose run controller /bin/bash
+attach:
+	docker compose exec controller bash
 
 down:
 	docker compose down -v --remove-orphans
@@ -23,4 +16,9 @@ logs:
 logsf:
 	docker compose logs --tail 100 -f
 
-.SILENT: build demo _start_workers _start_controller down logs logsf
+stats:
+	docker stats
+
+develop: build-image start attach
+
+.SILENT: build-image start down logs logsf stats develop attach

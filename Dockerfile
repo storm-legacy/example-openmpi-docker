@@ -43,5 +43,9 @@ RUN set -x \
   && chown -R app:app /home/app \
   && chown -R app:app /etc/dropbear
 
+COPY --chown=app:app ["hostfile.txt", "start.sh", "get-ssh-keys.sh", "/app/"]
+RUN set -x \
+  && chmod +x /app/*.sh
+
 USER app
 CMD [ "dropbear", "-F", "-E", "-R" ]

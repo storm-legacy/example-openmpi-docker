@@ -1,19 +1,49 @@
-version: '3'
+version: "3"
 
 networks:
   ompi-inet:
-
+    ipam:
+      config:
+        - subnet: 10.110.0.0/24
 
 services:
   controller:
-    image: &APP_IMAGE ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
-    command: /bin/bash
-
-  worker-node:
-    &WORKER_SETTINGS
-    image: *APP_IMAGE
+    image: &IMAGE mpidemo:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: controller
+    command: [ "tail", "-f", "/dev/null" ]
     networks:
-      ompi-inet: {}
+      ompi-inet:
+        ipv4_address: 10.110.0.5
+
+  node-1:
+    &WORKER_SETTINGS
+    image: *IMAGE
+    hostname: node-1
+    networks:
+      ompi-inet:
+        ipv4_address: 10.110.0.10
     cpus: 1
-    deploy:
-      replicas: 6
+
+  node-2:
+    <<: *WORKER_SETTINGS
+    hostname: node-2
+    networks:
+      ompi-inet:
+        ipv4_address: 10.110.0.11
+
+  node-3:
+    <<: *WORKER_SETTINGS
+    hostname: node-3
+    networks:
+      ompi-inet:
+        ipv4_address: 10.110.0.12
+
+  node-4:
+    <<: *WORKER_SETTINGS
+    hostname: node-4
+    networks:
+      ompi-inet:
+        ipv4_address: 10.110.0.13
