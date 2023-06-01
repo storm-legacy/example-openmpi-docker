@@ -32,6 +32,9 @@ RUN set -x \
   && cp /tmp/build/bin/* /app/ \
   && rm -rf /tmp/*
 
+ENV WORKERS_NUM=2 \
+  SAMPLES_POOL=1000000
+
 RUN set -x \
   && useradd -c "app" -s /bin/bash -u 1000 -m app \
   && mkdir -p /home/app/.ssh \
@@ -43,7 +46,7 @@ RUN set -x \
   && chown -R app:app /home/app \
   && chown -R app:app /etc/dropbear
 
-COPY --chown=app:app ["hostfile.txt", "start.sh", "get-ssh-keys.sh", "/app/"]
+COPY --chown=app:app ["hostfile.txt", "start.sh", "/app/"]
 RUN set -x \
   && chmod +x /app/*.sh
 

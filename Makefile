@@ -20,5 +20,3 @@ stats:
 	docker stats
 
 develop: build-image start attach
-
-.SILENT: build-image start down logs logsf stats develop attach

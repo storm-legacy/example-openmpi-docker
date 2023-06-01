@@ -17,6 +17,9 @@ services:
     networks:
       ompi-inet:
         ipv4_address: 10.110.0.5
+    environment:
+      WORKERS_NUM: 9
+      SAMPLES_POOL: 100000000
 
   node-1:
     &WORKER_SETTINGS
