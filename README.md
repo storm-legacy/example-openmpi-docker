@@ -42,6 +42,11 @@ Control resource usage (run on the host):
 $ docker stats
 ```
 
+Clean after testing (run on host):
+```
+$ make down
+```
+
 ## Customization
 There are two major values possible to adjust:
 *   `SAMPLES_POOL` - the number of generated points (x,y) that will be shared across nodes.
