@@ -3,6 +3,7 @@
 # ENVIRONMENT VARIABLES USED:
 # $WORKERS_NUM, $SAMPLES_POOL
 
+# SSH BLOCK
 # Get hosts
 HOSTS=$(cut -f1 -d" " hostfile.txt)
 
@@ -12,5 +13,7 @@ for host in $HOSTS
 do
   ssh-keyscan $host >> ~/.ssh/known_hosts 2> /dev/null
 done
+# END SSH BLOCK
+
 
 /usr/local/bin/mpirun -n ${WORKERS_NUM} --hostfile hostfile.txt /app/application ${SAMPLES_POOL}

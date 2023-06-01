@@ -28,14 +28,14 @@ void controllerProcess(uint64_t id, uint64_t count) {
   MPI_Request* requests = new MPI_Request[WORKERS_NUM];
   MPI_Status* statuses = new MPI_Status[WORKERS_NUM];
 
-  for (auto i = 0; i < WORKERS_NUM; ++i)
+  for (size_t i = 0; i < WORKERS_NUM; ++i)
     MPI_Irecv(buffer + i, 1, MPI_UINT64_T, i + 1, 0, MPI_COMM_WORLD, &requests[i]);
 
   MPI_Waitall(WORKERS_NUM, requests, statuses);
 
   // Sum each result
   uint64_t sum = 0;
-  for (auto i = 0; i < WORKERS_NUM; ++i)
+  for (size_t i = 0; i < WORKERS_NUM; ++i)
     sum += buffer[i];
 
   // Calculate final result
@@ -67,7 +67,7 @@ void workerProcess(uint64_t id, uint64_t count) {
 
   // Calculate PI with Monte Carlo
   uint64_t pointsInsideCircle = 0;
-  for (auto i = 0; i < (*sampleSize); ++i) {
+  for (size_t i = 0; i < (*sampleSize); ++i) {
     double x = distribution(generator);
     double y = distribution(generator);
     double distSquared = x * x + y * y;

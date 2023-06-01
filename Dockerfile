@@ -1,6 +1,7 @@
 FROM debian:bullseye-slim AS base
 ARG OPENMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.5.tar.gz"
 
+# System update step
 RUN set -x \
   && export DEBIAN_FRONTEND=noninteractive \
   && apt-get update \
@@ -8,11 +9,12 @@ RUN set -x \
   build-essential \
   ca-certificates \
   dropbear \
-  iproute2 \
   openssh-client \
   cmake \
-  wget
+  wget \
+  doas vim nano 
 
+# OpenMPI build step
 RUN set -x \
   && wget -q ${OPENMPI_URL} -O /tmp/openmpi.tar.gz \
   && tar -xvzf /tmp/openmpi.tar.gz -C /tmp/ \
@@ -25,6 +27,7 @@ RUN set -x \
 
 WORKDIR /app
 
+# Application build step
 COPY [".", "/tmp/"]
 RUN set -x \
   && cmake -S /tmp -B /tmp/build \
@@ -35,6 +38,7 @@ RUN set -x \
 ENV WORKERS_NUM=2 \
   SAMPLES_POOL=1000000
 
+# System prep step
 RUN set -x \
   && useradd -c "app" -s /bin/bash -u 1000 -m app \
   && mkdir -p /home/app/.ssh \
@@ -44,8 +48,12 @@ RUN set -x \
   && chown -R app:app /home/app \
   && chown -R app:app /app \
   && chown -R app:app /home/app \
-  && chown -R app:app /etc/dropbear
+  && chown -R app:app /etc/dropbear \
+  && ln -sf /usr/bin/doas /usr/bin/sudo \
+  && echo "permit nopass app" > /etc/doas.conf
 
+# Additional copying of files to image
+# and giving them permissions
 COPY --chown=app:app ["hostfile.txt", "start.sh", "/app/"]
 RUN set -x \
   && chmod +x /app/*.sh
