@@ -3,9 +3,8 @@
 #include <mpi.h>
 #include <random>
 #include <unistd.h>
-#include <vector>
 
-uint64_t g_numOfSamples = 10'000'000'000;
+uint64_t g_numOfSamples = 100'000;
 
 // Controller process
 void controllerProcess(uint64_t id, uint64_t count) {
